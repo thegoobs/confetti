@@ -1,9 +1,8 @@
-//packages
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
+import './confetti_particle.dart';
 
 class ConfettiAnimationBox extends StatefulWidget {
-  ConfettiAnimationBox({Key key, this.child, this.duration = 5, this.amount = 30}) : super(key: key);
+  ConfettiAnimationBox({Key key, this.child, this.duration = 1, this.amount = 30}) : super(key: key);
 
   final Widget child;
   final dynamic duration;
@@ -13,30 +12,7 @@ class ConfettiAnimationBox extends StatefulWidget {
   _ConfettiAnimationBoxState createState() => _ConfettiAnimationBoxState();
 }
 
-class _ConfettiAnimationBoxState extends State<ConfettiAnimationBox> with SingleTickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller = AnimationController(
-      duration: Duration(seconds: widget.duration),
-      vsync: this 
-    );
-
-    animation = Tween<double>(begin: 0, end: 300).animate(controller)
-      ..addListener(() {
-        setState(() {
-
-        }); 
-      });
-
-    controller.forward();
-  }
-
-
+class _ConfettiAnimationBoxState extends State<ConfettiAnimationBox> {
   @override
   Widget build(BuildContext context) {
     List<Widget> _stackList = [];
@@ -44,19 +20,18 @@ class _ConfettiAnimationBoxState extends State<ConfettiAnimationBox> with Single
     //put wrapped child at bottom of stack
     _stackList.add(widget.child);
 
-    //add particles equal to the amount specified in amount.widget
-    for (int i = 0; i < widget.amount; i++) {
-      _stackList.add(
-        Positioned(
-          left: ((i + 1) * 10 + animation.value).toDouble(),
-          child: Container(
-            color: Colors.red,
-            width: 5,
-            height: 5,
-          ),
-        ));
-    }
-
+    //add particles equal to the amount specified in amount.widget if widget.animation is true
+      for (int i = 0; i < widget.amount; i++) {
+        _stackList.add(
+            ConfettiParticle(
+              color: Colors.red,
+              width: 5,
+              height: 5,
+              duration: widget.duration
+            )
+          );
+      }
+  
     return Stack(
       children: _stackList,
     );
